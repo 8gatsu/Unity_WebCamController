@@ -25,6 +25,7 @@ public class WebCamController : MonoBehaviour {
     static WebCamTexture[] webcamTexture = null;
     static Texture2D[] outputTextureArray = null;
     Color32[] colors = null;
+    Quaternion baseRotation;
 
     // Use this for initialization
     void Start () {
@@ -76,7 +77,13 @@ public class WebCamController : MonoBehaviour {
         else if (GetComponent<RawImage>() != null)
         {
             GetComponent<RawImage>().texture = outputTexture;
+            //GetComponent<RawImage>().rectTransform.localScale = new Vector3(1f, (webcamTexture[targetCamID].videoVerticallyMirrored ? -1f : 1f), 1f);
         }
+
+        Debug.Log("width:" + webcamTexture[camID].width.ToString() + " height:"+ webcamTexture[camID].height.ToString());
+
+        baseRotation = transform.rotation;
+        //transform.rotation = baseRotation * Quaternion.AngleAxis(webcamTexture[targetCamID].videoRotationAngle, Vector3.up);
     }
 
     public void On() {
@@ -110,10 +117,15 @@ public class WebCamController : MonoBehaviour {
         {
             webcamTexture[targetCamID].GetPixels32(colors);
 
-            imageProc.Invoke(colors, width, height);
+            imageProc.Invoke(colors, webcamTexture[targetCamID].width, webcamTexture[targetCamID].height);
 
             outputTexture.SetPixels32(colors);
             outputTexture.Apply();
+
+            //transform.rotation = baseRotation * Quaternion.AngleAxis(webcamTexture[targetCamID].videoRotationAngle, Vector3.up);
+            GetComponent<RawImage>().rectTransform.localScale = new Vector3(1f, (webcamTexture[targetCamID].videoVerticallyMirrored ? -1f : 1f), 1f);
+            GetComponent<RawImage>().rectTransform.localEulerAngles = new Vector3(0, 0, -webcamTexture[targetCamID].videoRotationAngle);
+            //outputTexture.transform.localScale = new Vector3( 1f , (webcamTexture[targetCamID].videoVerticallyMirrored? -1f : 1f), 1f);
         }
 
     }

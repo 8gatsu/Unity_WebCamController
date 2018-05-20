@@ -54,7 +54,7 @@ public class ImgProcGrayScale : MonoBehaviour {
         byte[] src, byte[] dst, int width, int height,
         float[,] filter, int filter_numerator = 1, int filter_denominator = 1,
         bool absolute_value = true,
-        bool normalize = false, float normalize_param= -1.0f
+        bool normalize = false, float normalize_param = -1.0f
         )
     {
         int[] result = new int[dst.Length];
@@ -65,14 +65,15 @@ public class ImgProcGrayScale : MonoBehaviour {
         int marginX = fsizeX / 2;
         int marginY = fsizeY / 2;
 
-        for (int y = marginY; y < height - marginY -1; y++)
+        for (int y = marginY; y < height - marginY - 1; y++)
         {
             for (int x = marginX; x < width - marginX - 1; x++)
             {
-                for(int yi = 0; yi < fsizeY; yi++)
+                for (int yi = 0; yi < fsizeY; yi++)
                 {
-                    for (int xi = 0; xi < fsizeX; xi++) {
-                        result[y * width + x] += (int)(filter[yi,xi] * src[(y+yi-marginY)*width+x+xi-marginX]);
+                    for (int xi = 0; xi < fsizeX; xi++)
+                    {
+                        result[y * width + x] += (int)(filter[yi, xi] * src[(y + yi - marginY) * width + x + xi - marginX]);
                     }
                 }
                 if (filter_numerator != 1 || filter_denominator != 1) result[y * width + x] = result[y * width + x] * filter_numerator / filter_denominator;
@@ -82,12 +83,13 @@ public class ImgProcGrayScale : MonoBehaviour {
 
         if (normalize)
         {
-            int max = 0;
+            int max = 1;
             for (int i = 0; i < result.Length; i++)
             {
                 if (result[i] > max) max = result[i];
             }
-            if (normalize_param < 0) {
+            if (normalize_param < 0)
+            {
                 int total = 0;
                 for (int i = 0; i < result.Length; i++)
                 {
@@ -105,6 +107,108 @@ public class ImgProcGrayScale : MonoBehaviour {
         }
 
     }
+
+    //int[,] sobelX = new int[,] {
+    //    { 1, 0, -1},
+    //    { 2, 0, -2},
+    //    { 1, 0, -1}
+    //};
+    //int[,] sobelY = new int[,] {
+    //    {  1,  2,  1},
+    //    {  0,  0,  0},
+    //    { -1, -2, -1}
+    //};
+    //int[,] gaussian = new int[,] {
+    //    { 1,1,1 },
+    //    { 1,1,1 },
+    //    { 1,1,1 }
+    //};
+
+
+    //public static void Filtering
+    //    (
+    //    byte[] src, byte[] dst, int width, int height,
+    //    int[,] filter, int filter_numerator = 1, int filter_denominator = 1,
+    //    bool absolute_value = true,
+    //    bool normalize = false, float normalize_param = -1.0f
+    //    )
+    //{
+    //    int[] result = new int[dst.Length];
+    //    for (int i = 0; i < result.Length; i++) { result[i] = 0; }
+
+    //    int fsizeX = filter.GetLength(1);
+    //    int fsizeY = filter.GetLength(0);
+    //    int marginX = fsizeX / 2;
+    //    int marginY = fsizeY / 2;
+
+    //    int endpt = dst.Length;
+    //    for (int yi = 0; yi < fsizeY; yi++)
+    //    {
+    //        for (int xi = 0; xi < fsizeX; xi++)
+    //        {
+    //            int fv = filter[yi, xi];
+    //            for (int y = 0; y < height; y++)
+    //            {
+    //                if((y - (yi - marginY)) < height) {
+    //                    int si = y * width;
+    //                    int ri = (y - (yi - marginY)) * width - (xi - marginX);
+    //                    for (int x = 0; x - (xi - marginX) < width; x++)
+    //                    {
+    //                        if (
+    //                            0 <= x - (xi - marginX)
+    //                            && si < endpt
+    //                            && 0 <= ri
+    //                            && ri < endpt
+    //                            )
+    //                        {
+    //                            result[ri] += (int)(fv * src[si]);
+    //                        }
+    //                        si++;
+    //                        ri++;
+    //                    }
+
+    //                }
+
+    //            }
+    //        }
+    //    }
+    //    if (filter_numerator != 1 || filter_denominator != 1 || absolute_value)
+    //    {
+    //        for(int i=0; i < result.Length; i++) {
+    //            if (filter_numerator != 1 || filter_denominator != 1) result[i] = result[i] * filter_numerator / filter_denominator;
+    //            if (absolute_value && result[i] < 0) result[i] = -result[i];
+    //        }
+    //    }
+
+
+
+
+    //    if (normalize)
+    //    {
+    //        int max = 1;
+    //        for (int i = 0; i < result.Length; i++)
+    //        {
+    //            if (result[i] > max) max = result[i];
+    //        }
+    //        if (normalize_param < 0)
+    //        {
+    //            int total = 0;
+    //            for (int i = 0; i < result.Length; i++)
+    //            {
+    //                total += result[i];
+    //            }
+    //            int avg = total / (width * height);
+    //            if (avg == 0) avg = 1;
+    //            if (max >= avg * normalize_param) max = (int)(avg * normalize_param);
+    //        }
+    //        for (int i = 0; i < result.Length; i++) { dst[i] = (byte)(result[i] * 255 / max); }
+    //    }
+    //    else
+    //    {
+    //        for (int i = 0; i < result.Length; i++) { dst[i] = (byte)result[i]; }
+    //    }
+
+    //}
 
 
     void ByteToColor(byte[] src, Color32[] dst) {
